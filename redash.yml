@@ -1,0 +1,89 @@
+version: "3.7"
+
+services:
+  server:
+    image: redash/redash:latest  # 使用最新的 Redash 映像
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "5003:5000"  # Redash 的 Web 界面通過此埠訪問
+    environment:
+      REDASH_DATABASE_URL: "postgresql://redash:redash@postgres/redash"
+      REDASH_REDIS_URL: "redis://redis:6379/0"
+      REDASH_WEB_WORKERS: 4
+      # 這是生成的密鑰
+      REDASH_SECRET_KEY: "M8XfeIujyf-BDpH0KpAAtVlDox4F_e6FynAYPqU8fE0"
+      REDASH_NAME: "redash"
+      REDASH_EMAIL: "redash@example.com"
+      REDASH_PASSWORD: "redash"
+    command: server  # 啟動 server 模式
+    restart: always
+    networks:
+        - db_network
+ 
+  worker:
+    image: redash/redash:latest
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      REDASH_DATABASE_URL: "postgresql://redash:redash@postgres/redash"
+      REDASH_REDIS_URL: "redis://redis:6379/0"
+      QUEUES: "queries,scheduled_queries,celery"
+      WORKERS_COUNT: 4
+      # 確保 worker 使用相同的密鑰
+      REDASH_SECRET_KEY: "M8XfeIujyf-BDpH0KpAAtVlDox4F_e6FynAYPqU8fE0"
+    command: worker  # 啟動 worker 模式
+    restart: always
+    networks:
+        - db_network
+
+  scheduler:
+    image: redash/redash:latest
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      REDASH_DATABASE_URL: "postgresql://redash:redash@postgres/redash"
+      REDASH_REDIS_URL: "redis://redis:6379/0"
+      QUEUES: "scheduled_queries"
+      WORKERS_COUNT: 1  # Scheduler 通常只需要 1 個進程
+      # 確保 scheduler 使用相同的密鑰
+      REDASH_SECRET_KEY: "M8XfeIujyf-BDpH0KpAAtVlDox4F_e6FynAYPqU8fE0"
+    command: scheduler  # 啟動任務調度器
+    restart: always
+    networks:
+        - db_network
+
+  redis:
+    image: redis:6.2-alpine  # 輕量級 Redis 實現
+    ports:
+      - "6379:6379"  # Redis 的埠
+    volumes:
+      - redis_data:/data  # 資料持久化
+    restart: always
+    networks:
+        - db_network
+
+  postgres:
+    image: postgres:12-alpine  # 輕量級 PostgreSQL 版本
+    ports:
+      - "5432:5432"  # PostgreSQL 的埠
+    environment:
+      POSTGRES_USER: "redash"
+      POSTGRES_PASSWORD: "redash"
+      POSTGRES_DB: "redash"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # 持久化數據
+    restart: always
+    networks:
+        - db_network
+
+volumes:
+  redis_data:  # Redis 數據持久化
+  postgres_data:  # PostgreSQL 數據持久化
+
+networks:
+  db_network:
+    external: true
