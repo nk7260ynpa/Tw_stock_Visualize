@@ -28,6 +28,8 @@ services:
     restart: always
     networks:
       - db_network
+    volumes:
+      - grafana_data:/var/lib/grafana  # Grafana 數據存儲卷
 
   netdata:
     image: netdata/netdata:latest
@@ -44,4 +46,5 @@ networks:
   db_network:
 
 volumes:
+  grafana_data: {}
   prometheus_data: {}
