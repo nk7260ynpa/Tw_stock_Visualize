@@ -32,7 +32,7 @@ services:
       - grafana_data:/var/lib/grafana  # Grafana 數據存儲卷
 
   netdata:
-    image: netdata/netdata:latest
+    image: netdata/netdata:v2.5.3
     container_name: netdata
     hostname: localhost
     ports:
@@ -40,6 +40,20 @@ services:
     restart: always
     networks:
       - db_network
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+
 
 
 networks:
@@ -48,3 +62,8 @@ networks:
 volumes:
   grafana_data: {}
   prometheus_data: {}
+  netdataconfig:
+  netdatalib:
+  netdatacache:
+
+  
