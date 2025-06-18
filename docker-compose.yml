@@ -4,10 +4,10 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    hostname: localhost
+    #hostname: localhost
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
+      #- prometheus_data:/prometheus
     ports:
       - "9090:9090"
     restart: always
@@ -17,7 +17,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    hostname: localhost
+    #hostname: localhost
     user: root
     environment:
       - GF_SECURITY_ADMIN_USER=root  # 設置 Grafana 管理員帳號
@@ -31,39 +31,10 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana  # Grafana 數據存儲卷
 
-  netdata:
-    image: netdata/netdata:v2.5.3
-    container_name: netdata
-    hostname: localhost
-    ports:
-      - "19999:19999"
-    restart: always
-    networks:
-      - db_network
-    cap_add:
-      - SYS_PTRACE
-    security_opt:
-      - apparmor:unconfined
-    volumes:
-      - /etc/passwd:/host/etc/passwd:ro
-      - /etc/group:/host/etc/group:ro
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /etc/os-release:/host/etc/os-release:ro
-      - netdataconfig:/etc/netdata
-      - netdatalib:/var/lib/netdata
-      - netdatacache:/var/cache/netdata
-
-
-
 networks:
   db_network:
 
 volumes:
   grafana_data: {}
   prometheus_data: {}
-  netdataconfig:
-  netdatalib:
-  netdatacache:
-
   
