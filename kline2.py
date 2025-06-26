@@ -34,6 +34,8 @@ data.rename({"Date": "date",
 
 data.set_index('date', inplace=True)
 
+prod = "2330"
+
 position = 0
 trade = pd.DataFrame()
 
@@ -50,4 +52,24 @@ for i in range(data.shape[0]-1):
     if position == 0:
         if c_close > c_open and (c_close-c_open) * 2 < (c_open-c_low):
             position = 1
+            order_i = i
+            order_time = n_time
+            order_price = n_open
+            order_unit = 1
+
+    elif position == 1:
+        if i > order_i + 3 and c_close > c_open:
+            position = 0
+            cover_time = n_time
+            cover_price = n_open
+            trade = pd.concat([trade, pd.DataFrame([[
+                prod,
+                "Buy",
+                order_time,
+                order_price,
+                cover_time,
+                cover_price,
+                order_unit
+            ]])], ignore_index=True)
+print(trade)
             
