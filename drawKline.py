@@ -45,4 +45,5 @@ mpf.plot(df, type='candle', style='yahoo',
          figratio=(16, 9),
          figscale=1.2,
          savefig='2330_daily_price.png',
+         tight_layout=True,
          show_nontrading=True)
