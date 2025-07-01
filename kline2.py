@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from sqlalchemy import text
 
 from routers import MySQLRouter
+from BackTest import ChartTrade
 
 HOST = "localhost:3306"
 USER = "root"
@@ -71,5 +72,7 @@ for i in range(data.shape[0]-1):
                 cover_price,
                 order_unit
             ]])], ignore_index=True)
+
 print(trade)
+ChartTrade(data, trade, v_enable=True)
             
