@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sqlalchemy import text
 
 from routers import MySQLRouter
-from BackTest import ChartTrade
+from BackTest import ChartTrade, Performance
 
 HOST = "localhost:3306"
 USER = "root"
@@ -73,6 +73,7 @@ for i in range(data.shape[0]-1):
                 order_unit
             ]])], ignore_index=True)
 
-print(trade)
+
+Performance(trade, prodtype='Stock')
 ChartTrade(data, trade, v_enable=True)
             
