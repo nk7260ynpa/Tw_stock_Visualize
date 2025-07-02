@@ -34,7 +34,7 @@ def ChartTrade(data,trade=pd.DataFrame(),addp=[],v_enable=True):
     mcolor=mpf.make_marketcolors(up='r', down='g', inherit=True)
     mstyle=mpf.make_mpf_style(base_mpf_style='yahoo', marketcolors=mcolor)
     mpf.plot(data1,addplot=addp,style=mstyle,type='candle',
-             volume=v_enable, savefig='2330_daily_price.png',
+             volume=v_enable, savefig='Trade.png',
              tight_layout=True, figsize=(24, 8))
     
 # 計算交易績效指標
