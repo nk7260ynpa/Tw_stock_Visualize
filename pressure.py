@@ -39,7 +39,39 @@ data.set_index('date', inplace=True)
 data['ceil'] = data['high'].rolling(3).max().shift()
 
 prod = "0050"
+
+position = 0
+trade = pd.DataFrame()
+for i in range(data.shape[0]-1):
+    c_time = data.index[i]
+    c_high = data.loc[c_time, 'high']
+    c_close = data.loc[c_time, 'close']
+    c_ceil = data.loc[c_time, 'ceil']
+
+    n_time = data.index[i+1]
+    n_open = data.loc[n_time, 'open']
+
+    if position == 0:
+        if c_close > c_ceil:
+            position = 1
+            order_i = i
+            order_time = n_time
+            order_price = n_open
+            order_unit = 1
+
+    elif position == 1:
+        if c_high < c_ceil:
+            position = 0
+            cover_time = n_time
+            cover_price = n_open
+            cover_unit = 1
+            trade = pd.concat([trade, pd.DataFrame([[
+                prod, 'Buy', order_time, order_price,
+                cover_time, cover_price, order_unit
+            ]])], ignore_index=True)
+
 addp = []
 addp.append(mpf.make_addplot(data['ceil']))
 
+Performance(trade, prodtype='ETF')
 ChartTrade(data, addp=addp, v_enable=False)
