@@ -1,3 +1,5 @@
+# Basic In and Out Strategy for Stock Trading
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from sqlalchemy import text
