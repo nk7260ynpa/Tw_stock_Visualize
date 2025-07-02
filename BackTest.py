@@ -127,7 +127,8 @@ def Performance(trade=pd.DataFrame(),prodtype='ETF'):
     ax.plot( trade1['dd'] , '-' ,color='#00A600',label='MDD')
     ax.plot( trade1['new_high'] , 'o' ,color='#FF0000',label='Equity high')
     ax.legend()
-    plt.show()
+    ax.grid(True, linestyle='--', alpha=0.7)
+    plt.savefig('MoneyCurve.png', dpi=300, bbox_inches='tight')
     
     return trade1
    
