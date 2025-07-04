@@ -6,6 +6,12 @@ docker compose -f redash.yml  up -d
 docker-compose -f redash.yml run --rm server create_db
 ```
 
+## 安裝Talib
+```bash
+brew install ta-lib
+pip install ta-lib
+```
+
 ## 啟動 prometheus grafana netdata
 ```bash
 docker compose -f docker-compose.yml up -d
