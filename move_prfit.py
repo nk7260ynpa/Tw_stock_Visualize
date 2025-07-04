@@ -75,5 +75,5 @@ for i in range(data.shape[0]-1):
 addp = []
 addp.append(mpf.make_addplot(data['ceil']))
 
-Performance(trade, prodtype='ETF')
+Performance(trade, prodtype='Stock')
 ChartTrade(data, addp=addp, v_enable=False)
