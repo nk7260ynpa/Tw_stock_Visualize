@@ -41,4 +41,8 @@ data['ceil'] = data['high'].rolling(3).max().shift()
 
 prod = "0050"
 
-df = EMA(data, timeperiod=20)
+data["EMA"] = EMA(data, timeperiod=20)
+
+addp = []
+addp.append(mpf.make_addplot(data['EMA']))
+ChartTrade(data, addp=addp, v_enable=False)
