@@ -1,3 +1,6 @@
+import pandas as pd
+from sqlalchemy import text
+
 from clients import mysql_conn, mysql_conn_db
 
 class MySQLRouter:
@@ -52,4 +55,43 @@ class MySQLRouter:
         >>> conn.close()
         """
         return self.conn
+    
+class MyTWSESQLRouter:
+    def __init__(self, host, user, password):
+        """
+        Initialize the MyTWSESQLRouter with the given parameters.
+
+        Args:
+            host (str): The MySQL host.
+            user (str): The MySQL user.
+            password (str): The MySQL password.
+            db_name (str, optional): The name of the database. Defaults to None.
+        """
+        self.host = host
+        self.user = user
+        self.password = password
+        self.db_name = "TWSE"
+        self.conn = self._build_mysql_conn()
+    
+    def load_data(self, start_date, end_date, security_code):
+        """
+        Load data from the TWSE database.
+
+        Args:
+            start_date (str): The start date for the query.
+            end_date (str): The end date for the query.
+            security_code (str): The security code to filter the data.
+
+        Returns:
+            pd.DataFrame: The loaded data as a DataFrame.
+        """
+        query = f"""
+            SELECT * 
+            FROM DailyPrice
+            WHERE Date BETWEEN '{start_date}' AND '{end_date}' 
+            AND SecurityCode = '{security_code}'
+        """
+        results = self.conn.execute(text(query)).fetchall()
+        return pd.DataFrame(results)
+        
         
